@@ -35,6 +35,14 @@ void CPlayerComponent::Initialize()
 	
 	// Register the RemoteReviveOnClient function as a Remote Method Invocation (RMI) that can be executed by the server on clients
 	SRmi<RMI_WRAP(&CPlayerComponent::RemoteReviveOnClient)>::Register(this, eRAT_NoAttach, false, eNRT_ReliableOrdered);
+	pe_player_dynamics params;
+	//params.gravity = ZERO;
+	params.kInertia = 0;
+	params.gravity = Vec3(0, 0, -20);
+	params.kInertiaAccel = 0;
+	params.kAirControl = 3;
+	GetEntity()->GetPhysics()->SetParams(&params);
+	// Process mouse input to update look orientation.
 }
 
 void CPlayerComponent::InitializeLocalPlayer()
@@ -95,14 +103,7 @@ void CPlayerComponent::Update(float frameTime) {
 	// This results in the physical representation of the character moving
 	m_frametime = frameTime;
 	
-	pe_player_dynamics params;
-	//params.gravity = ZERO;
-	params.kInertia = 0;
-	params.gravity = Vec3(0, 0, -20);
-	params.kInertiaAccel = 0;
-	params.kAirControl = 3;
-	GetEntity()->GetPhysics()->SetParams(&params);
-	// Process mouse input to update look orientation.
+	
 	UpdateLookDirectionRequest(frameTime);
 
 	// Update the animation state of the character
